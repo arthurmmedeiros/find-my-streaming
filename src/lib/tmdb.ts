@@ -29,6 +29,10 @@ type SearchResult = {
   const TMDB_API_KEY = process.env.TMDB_API_KEY
   const BASE_URL = "https://api.themoviedb.org/3"
   
+interface CatalogueItem {
+  media_type: "movie" | "tv"
+}
+
   // Function to search for movies and TV shows
   export async function getSearchResults(query: string): Promise<SearchResult[]> {
     if (!TMDB_API_KEY) {
@@ -48,7 +52,7 @@ type SearchResult = {
       const data = await response.json()
   
       // Filter out people and only keep movies and TV shows
-      return data.results.filter((item: any) => item.media_type === "movie" || item.media_type === "tv")
+      return data.results.filter((item: CatalogueItem) => item.media_type === "movie" || item.media_type === "tv")
     } catch (error) {
       console.error("Error fetching search results:", error)
       return []

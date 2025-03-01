@@ -7,7 +7,7 @@ export default function Home({
 }: {
   searchParams: { query?: string }
 }) {
-  const query = searchParams.query || ""
+  // const query = searchParams.query || ""
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -17,13 +17,13 @@ export default function Home({
           Find where to watch your favorite movies and TV shows across streaming platforms
         </p>
 
-        <SearchBar initialQuery={query} />
+        <SearchBar initialQuery={searchParams.query ?? ''} />
 
-        {query && (
+        {/* {query && (
           <Suspense fallback={<SearchSkeleton />}>
             <SearchResults query={query} />
           </Suspense>
-        )}
+        )} */}
       </div>
     </main>
   )
