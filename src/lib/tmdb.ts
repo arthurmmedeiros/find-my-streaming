@@ -26,7 +26,7 @@ type SearchResult = {
   }
   
   // API key should be stored in environment variables
-  const TMDB_API_KEY = process.env.TMDB_API_KEY
+  const TMDB_API_KEY = "a32d13538c0f5df67e59fa8f43ec1edf";// process.env.TMDB_API_KEY
   const BASE_URL = "https://api.themoviedb.org/3"
   
 interface CatalogueItem {
@@ -50,7 +50,7 @@ interface CatalogueItem {
       }
   
       const data = await response.json()
-  
+      console.log(data);
       // Filter out people and only keep movies and TV shows
       return data.results.filter((item: CatalogueItem) => item.media_type === "movie" || item.media_type === "tv")
     } catch (error) {

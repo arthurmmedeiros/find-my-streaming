@@ -1,53 +1,77 @@
-import SearchBar from "@/components/search-bar"
-import { Suspense } from "react"
-import SearchResults from "@/components/search-results"
+import { Suspense } from 'react';
+import Hero from '@/components/hero';
+import LoadingSpinner from '@/components/loading-spinner';
+import { Metadata } from 'next';
+import Link from 'next/link';
+import SearchSection from '@/components/search-section';
 
-export default function Home({
+interface PageProps {
+  searchParams: { q?: string };
+}
+
+export async function generateMetadata({
   searchParams,
-}: {
-  searchParams: { query?: string }
-}) {
-  // const query = searchParams.query || ""
+}: PageProps): Promise<Metadata> {
+  const query = await searchParams.q;
 
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8">Streaming Service Finder</h1>
-        <p className="text-center text-muted-foreground mb-8">
-          Find where to watch your favorite movies and TV shows across streaming platforms
-        </p>
+  if (query) {
+    return {
+      title: `${query} - Find Streaming Services | FindMyStreaming`,
+      description: `Find where to stream "${query}" across Netflix, Prime Video, Disney+, and more streaming platforms.`,
+    };
+  }
 
-        <SearchBar initialQuery={searchParams.query ?? ''} />
-
-        {/* {query && (
-          <Suspense fallback={<SearchSkeleton />}>
-            <SearchResults query={query} />
-          </Suspense>
-        )} */}
-      </div>
-    </main>
-  )
+  return {
+    title: 'FindMyStreaming - Search Movies & TV Shows Across All Platforms',
+    description:
+      'Discover where to stream your favorite movies and TV shows across all major streaming platforms including Netflix, Prime Video, Disney+, and more.',
+  };
 }
 
-function SearchSkeleton() {
+export default function Home({ searchParams }: PageProps) {
+  const hasSearch = !!searchParams.q;
+
   return (
-    <div className="mt-8 space-y-4">
-      <div className="h-7 w-48 bg-muted rounded animate-pulse"></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array(6)
-          .fill(0)
-          .map((_, i) => (
-            <div key={i} className="border rounded-lg overflow-hidden">
-              <div className="aspect-[2/3] bg-muted animate-pulse"></div>
-              <div className="p-4 space-y-2">
-                <div className="h-5 bg-muted rounded w-3/4 animate-pulse"></div>
-                <div className="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
-                <div className="h-10 bg-muted rounded w-full mt-4 animate-pulse"></div>
-              </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-gray-900 bg-opacity-80 backdrop-blur-lg z-50 border-b border-gray-700 border-opacity-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link
+                href="/"
+                className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent"
+              >
+                FindMyStreaming
+              </Link>
             </div>
-          ))}
-      </div>
-    </div>
-  )
-}
+          </div>
+        </div>
+      </nav>
 
+      {/* Main Content */}
+      <main className="pt-16">
+        {!hasSearch ? (
+          <Hero />
+        ) : (
+          <Suspense
+            fallback={
+              <div className="container mx-auto px-4 py-8">
+                <div className="max-w-4xl mx-auto">
+                  <LoadingSpinner />
+                </div>
+              </div>
+            }
+          >
+            <SearchSection searchQuery={searchParams.q ?? ''} />
+          </Suspense>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-auto py-8 text-center text-gray-500">
+        <p>&copy; 2024 FindMyStreaming. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}

@@ -1,54 +1,92 @@
-"use client"
+'use client';
 
-import type React from "react"
+import { FormEvent, KeyboardEvent, useState, useEffect } from 'react';
+import { Search, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
-// import { Input } from "@/components/ui/input"
-// import { Button } from "@/components/ui/button"
-// import { Search } from "lucide-react"
-
-const SearchBar = ({ initialQuery = "" }: { initialQuery?: string }) => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [query, setQuery] = useState(initialQuery)
-  const [isPending, startTransition] = useTransition()
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const params = new URLSearchParams(searchParams)
-    if (query) {
-      params.set("query", query)
-    } else {
-      params.delete("query")
-    }
-
-    startTransition(() => {
-      router.push(`/?${params.toString()}`)
-    })
-  }
-
-  return (
-    <form onSubmit={handleSearch} className="relative">
-      <div className="relative">
-        {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" /> */}
-        <input
-          type="text"
-          placeholder="Search for movies or TV shows..."
-          className="pl-10 py-6 text-lg"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}        
-        />
-      </div>
-      <button 
-        type="button"
-        className="absolute right-1 top-1/2 -translate-y-1/2 px-4"
-        disabled={isPending || !query.trim()}>
-        {isPending ? "Searching..." : "Search"}
-      </button>
-    </form>
-  )
+interface SearchBarProps {
+  initialValue?: string;
+  isCompact?: boolean;
 }
 
-export default SearchBar;
+export default function SearchBar({
+  initialValue = '',
+  isCompact = false,
+}: SearchBarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [value, setValue] = useState(initialValue);
+
+  // Update local state when URL changes
+  useEffect(() => {
+    const query = searchParams.get('q') || '';
+    setValue(query);
+  }, [searchParams]);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (value.trim()) {
+      router.push(`/?q=${encodeURIComponent(value.trim())}`);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && value.trim()) {
+      router.push(`/?q=${encodeURIComponent(value.trim())}`);
+    }
+  };
+
+  const handleClear = () => {
+    setValue('');
+    router.push('/');
+  };
+
+  return (
+    <motion.form
+      onSubmit={handleSubmit}
+      className={`relative ${isCompact ? 'max-w-2xl' : ''}`}
+      initial={{ scale: 0.95 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="relative group">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Search for movies, TV shows..."
+          className={`
+            w-full bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 border-opacity-50 
+            rounded-full pl-12 pr-12 text-white placeholder-gray-400
+            focus:outline-none focus:border-purple-500 focus:border-opacity-50 focus:bg-gray-800 focus:bg-opacity-70
+            transition-all duration-300
+            ${isCompact ? 'py-3 text-base' : 'py-4 text-lg'}
+          `}
+        />
+        <Search
+          className={`
+            absolute left-4 text-gray-400 group-focus-within:text-purple-400
+            transition-colors duration-200
+            ${isCompact ? 'top-3.5 w-5 h-5' : 'top-5 w-6 h-6'}
+          `}
+        />
+        {value && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className={`
+              absolute right-4 text-gray-400 hover:text-white
+              transition-colors duration-200
+              ${isCompact ? 'top-3.5' : 'top-5'}
+            `}
+          >
+            <X className={isCompact ? 'w-5 h-5' : 'w-6 h-6'} />
+          </button>
+        )}
+      </div>
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-purple-600 to-pink-600 opacity-20 blur-xl group-focus-within:blur-2xl transition-all duration-300" />
+    </motion.form>
+  );
+}

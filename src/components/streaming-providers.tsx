@@ -1,21 +1,23 @@
-import { getWatchProviders } from "@/lib/tmdb"
-import Image from "next/image"
+import { getWatchProviders } from '@/lib/tmdb';
+import Image from 'next/image';
 
 export default async function StreamingProviders({
   mediaType,
   id,
 }: {
-  mediaType: string
-  id: number
+  mediaType: string;
+  id: number;
 }) {
-  const providers = await getWatchProviders(mediaType, id)
+  const providers = await getWatchProviders(mediaType, id);
 
   if (!providers || Object.keys(providers).length === 0) {
     return (
       <div className="mt-2">
-        <p className="text-sm text-muted-foreground">No streaming information available</p>
+        <p className="text-sm text-muted-foreground">
+          No streaming information available
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -32,7 +34,8 @@ export default async function StreamingProviders({
               <Image
                 src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
                 alt={provider.provider_name}
-                fill
+                width={192}
+                height={288}
                 className="object-cover"
               />
             </div>
@@ -41,6 +44,5 @@ export default async function StreamingProviders({
         ))}
       </div>
     </div>
-  )
+  );
 }
-
