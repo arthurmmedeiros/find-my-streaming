@@ -1,9 +1,6 @@
-import { motion } from 'framer-motion';
-
 export default function LoadingSpinner() {
   return (
     <div className="flex flex-col items-center justify-center py-12">
-      test
       {/* <motion.div
         className="relative w-16 h-16"
         animate={{ rotate: 360 }}

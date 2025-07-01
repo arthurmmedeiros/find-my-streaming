@@ -19,7 +19,6 @@ export default async function StreamingProviders({
   }
 
   try {
-    console.log('starts here');
     const watchProviders = await tmdbApi.getWatchProviders(mediaType, id);
     const countryProviders = watchProviders.results[API_CONFIG.DEFAULT_COUNTRY];
 
@@ -31,7 +30,7 @@ export default async function StreamingProviders({
       );
     }
 
-    const allProviders: Provider[] = [];
+    //const allProviders: Provider[] = [];
     const providerMap = new Map<number, Provider>();
 
     // Collect unique providers with priority
@@ -39,6 +38,7 @@ export default async function StreamingProviders({
       providers: Provider[] | undefined,
       category: string
     ) => {
+      console.log(category);
       providers?.forEach((provider) => {
         if (!providerMap.has(provider.provider_id)) {
           providerMap.set(provider.provider_id, provider);

@@ -4,14 +4,16 @@ import { Suspense } from 'react';
 import { Film } from 'lucide-react';
 import SearchResults from '@/components/results';
 
-interface HomeProps {
+type HomeProps = Promise<{
   searchParams: {
     query?: string;
   };
-}
+}>;
 
-export default function Home({ searchParams }: HomeProps) {
-  const query = searchParams.query || '';
+export default async function Home({ params }: { params: HomeProps }) {
+  const {
+    searchParams: { query },
+  } = await params;
 
   return (
     <main className="min-h-screen bg-background">
@@ -32,7 +34,10 @@ export default function Home({ searchParams }: HomeProps) {
               all streaming platforms
             </p>
 
-            <SearchBar initialQuery={query} className="max-w-2xl mx-auto" />
+            <SearchBar
+              initialQuery={query ?? ''}
+              className="max-w-2xl mx-auto"
+            />
           </div>
         </div>
       </section>
