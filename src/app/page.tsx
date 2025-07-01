@@ -4,16 +4,13 @@ import { Suspense } from 'react';
 import { Film } from 'lucide-react';
 import SearchResults from '@/components/results';
 
-type HomeProps = Promise<{
-  searchParams: {
-    query?: string;
-  };
-}>;
+interface HomeProps {
+  searchParams: Promise<{ query?: string }>;
+}
 
-export default async function Home({ params }: { params: HomeProps }) {
-  const {
-    searchParams: { query },
-  } = await params;
+export default async function Home({ searchParams }: HomeProps) {
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams?.query || '';
 
   return (
     <main className="min-h-screen bg-background">
