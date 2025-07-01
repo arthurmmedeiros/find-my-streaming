@@ -1,77 +1,75 @@
+import SearchBar from '@/components/search-bar';
+
 import { Suspense } from 'react';
-import Hero from '@/components/hero';
-import LoadingSpinner from '@/components/loading-spinner';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import SearchSection from '@/components/search-section';
+import { Film } from 'lucide-react';
+import SearchResults from '@/components/results';
 
-interface PageProps {
-  searchParams: { q?: string };
-}
-
-export async function generateMetadata({
-  searchParams,
-}: PageProps): Promise<Metadata> {
-  const query = await searchParams.q;
-
-  if (query) {
-    return {
-      title: `${query} - Find Streaming Services | FindMyStreaming`,
-      description: `Find where to stream "${query}" across Netflix, Prime Video, Disney+, and more streaming platforms.`,
-    };
-  }
-
-  return {
-    title: 'FindMyStreaming - Search Movies & TV Shows Across All Platforms',
-    description:
-      'Discover where to stream your favorite movies and TV shows across all major streaming platforms including Netflix, Prime Video, Disney+, and more.',
+interface HomeProps {
+  searchParams: {
+    query?: string;
   };
 }
 
-export default function Home({ searchParams }: PageProps) {
-  const hasSearch = !!searchParams.q;
+export default function Home({ searchParams }: HomeProps) {
+  const query = searchParams.query || '';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-gray-900 bg-opacity-80 backdrop-blur-lg z-50 border-b border-gray-700 border-opacity-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Link
-                href="/"
-                className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent"
-              >
-                FindMyStreaming
-              </Link>
+    <main className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section
+        className={`relative ${query ? 'py-12' : 'py-24'} transition-all duration-300`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-6">
+              <Film className="h-16 w-16 text-primary" />
             </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Find My Streaming
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8">
+              Discover where to watch your favorite movies and TV shows across
+              all streaming platforms
+            </p>
+
+            <SearchBar initialQuery={query} className="max-w-2xl mx-auto" />
           </div>
         </div>
-      </nav>
+      </section>
 
-      {/* Main Content */}
-      <main className="pt-16">
-        {!hasSearch ? (
-          <Hero />
-        ) : (
-          <Suspense
-            fallback={
-              <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                  <LoadingSpinner />
-                </div>
-              </div>
-            }
-          >
-            <SearchSection searchQuery={searchParams.q ?? ''} />
-          </Suspense>
-        )}
-      </main>
+      {/* Search Results Section */}
+      {query && (
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <Suspense fallback={<SearchResultsSkeleton />}>
+              <SearchResults query={query} />
+            </Suspense>
+          </div>
+        </section>
+      )}
+    </main>
+  );
+}
 
-      {/* Footer */}
-      <footer className="mt-auto py-8 text-center text-gray-500">
-        <p>&copy; 2024 FindMyStreaming. All rights reserved.</p>
-      </footer>
+function SearchResultsSkeleton() {
+  return (
+    <div className="mt-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+        <div className="h-5 w-32 bg-muted rounded animate-pulse" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={i} className="space-y-3">
+            <div className="aspect-[2/3] bg-muted rounded-lg animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-5 bg-muted rounded w-3/4 animate-pulse" />
+              <div className="h-4 bg-muted rounded w-1/2 animate-pulse" />
+              <div className="h-10 bg-muted rounded w-full animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
