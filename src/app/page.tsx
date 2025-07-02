@@ -2,12 +2,13 @@ import SearchResults from '@/components/results';
 import SearchBar from '@/components/search-bar';
 import { Suspense } from 'react';
 
-export default function Home({
-  searchParams,
-}: {
-  searchParams: { query?: string };
-}) {
-  const query = searchParams.query || '';
+interface HomeProps {
+  searchParams: Promise<{ query?: string }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams?.query || '';
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -49,7 +50,7 @@ export default function Home({
 
           {/* Search Section */}
           <div className="mb-16">
-            <SearchBar initialQuery={searchParams.query ?? ''} />
+            <SearchBar initialQuery={query ?? ''} />
           </div>
 
           {/* Results Section */}

@@ -81,4 +81,8 @@ export const tmdbApi = {
     }
     return `${API_CONFIG.IMAGE_BASE_URL}/${size}${path}`;
   },
+
+  async healthCheck(): Promise<boolean> {
+    return tmdbApiClient.healthCheck();
+  },
 };

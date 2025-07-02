@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { tmdbService } from '@/lib/tmdb';
+import { tmdbApi } from '@/lib/tmdb.api';
 import { tokenManager } from '@/lib/auth/token-manager';
 
 export async function GET() {
   try {
     // Check if TMDB API is accessible
-    const isHealthy = await tmdbService.healthCheck();
+    const isHealthy = await tmdbApi.healthCheck();
 
     // Get token info (without exposing the actual token)
     const tokenInfo = tokenManager.getTokenInfo();
