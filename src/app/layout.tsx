@@ -6,7 +6,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Streaming Service Finder',
+  title: 'Finda.Show',
   description: 'Find where to watch your favorite movies and TV shows',
 };
 

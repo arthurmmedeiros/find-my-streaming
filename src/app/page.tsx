@@ -33,7 +33,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </svg>
               </div>
               <Link href="/" className="text-xl font-bold text-white">
-                StreamFinder
+                Finda.Show
               </Link>
             </div>
 
