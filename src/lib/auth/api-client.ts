@@ -92,10 +92,15 @@ export class TMDBApiClient {
   /**
    * Convenience methods for common HTTP verbs
    */
-  async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-    const url = params
-      ? `${endpoint}?${new URLSearchParams(params)}`
-      : endpoint;
+  // async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+  //   const url = params
+  //     ? `${endpoint}?${new URLSearchParams(params)}`
+  //     : endpoint;
+  //   return this.request<T>(url, { method: 'GET' });
+  // }
+
+  async get<T>(endpoint: string, params?: URLSearchParams): Promise<T> {
+    const url = params ? `${endpoint}?${params}` : endpoint;
     return this.request<T>(url, { method: 'GET' });
   }
 
