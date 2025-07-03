@@ -4,10 +4,8 @@ import { tokenManager } from '@/lib/auth/token-manager';
 
 export async function GET() {
   try {
-    // Check if TMDB API is accessible
     const isHealthy = await tmdbApi.healthCheck();
 
-    // Get token info (without exposing the actual token)
     const tokenInfo = tokenManager.getTokenInfo();
 
     return NextResponse.json({

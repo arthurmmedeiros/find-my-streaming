@@ -73,7 +73,6 @@ export interface WatchProviderResponse {
   };
 }
 
-// Type guards
 export function isMovie(media: SearchResult): media is Movie {
   return media.media_type === 'movie';
 }

@@ -40,7 +40,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
     clearRecommendations();
   };
 
-  // Call the callback when results are found (only if provided)
   React.useEffect(() => {
     if (recommendations?.results && onResultsFound) {
       onResultsFound(recommendations.results);
@@ -57,7 +56,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
 
   return (
     <div className={`w-full max-w-4xl mx-auto ${className}`}>
-      {/* Main Search Form */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
         <div className="mb-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
@@ -132,7 +130,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
             )}
           </div>
 
-          {/* Rate Limit Info */}
           {rateLimitInfo && rateLimitInfo.remaining !== undefined && (
             <div className="text-xs text-gray-500 mt-2">
               {rateLimitInfo.remaining} requests remaining this window
@@ -146,7 +143,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
           )}
         </form>
 
-        {/* Example Prompts */}
         {!recommendations && !loading && (
           <div className="mt-6">
             <p className="text-sm text-gray-500 mb-3">Try these examples:</p>
@@ -165,7 +161,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
         )}
       </div>
 
-      {/* Error Display */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <div className="flex items-center gap-2">
@@ -188,10 +183,8 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
         </div>
       )}
 
-      {/* Results Display */}
       {recommendations && (
         <div className="space-y-6">
-          {/* AI Explanation */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -213,7 +206,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
                 <h3 className="font-medium text-blue-800 mb-1">AI Analysis</h3>
                 <p className="text-blue-700">{recommendations.explanation}</p>
 
-                {/* Search Criteria Display */}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
                   {recommendations.searchCriteria.mediaType !== 'both' && (
                     <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
@@ -243,7 +235,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
             </div>
           </div>
 
-          {/* Results Grid */}
           {recommendations.results.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {recommendations.results.map((item) => (
@@ -284,7 +275,6 @@ export const RecommendationSearch: React.FC<RecommendationSearchProps> = ({
   );
 };
 
-// Individual recommendation card component
 const RecommendationCard: React.FC<{ item: SearchResult }> = ({ item }) => {
   const title = item.media_type === 'movie' ? item.title : item.name;
   const releaseDate =
@@ -320,7 +310,6 @@ const RecommendationCard: React.FC<{ item: SearchResult }> = ({ item }) => {
           </div>
         )}
 
-        {/* Media type badge */}
         <div className="absolute top-2 left-2">
           <span
             className={`px-2 py-1 text-xs font-medium rounded ${
@@ -333,7 +322,6 @@ const RecommendationCard: React.FC<{ item: SearchResult }> = ({ item }) => {
           </span>
         </div>
 
-        {/* Rating badge */}
         {item.vote_average && item.vote_average > 0 && (
           <div className="absolute top-2 right-2">
             <span className="bg-yellow-500 text-white px-2 py-1 text-xs font-medium rounded flex items-center gap-1">

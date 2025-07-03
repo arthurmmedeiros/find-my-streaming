@@ -1,4 +1,3 @@
-// lib/middleware/rateLimitMiddleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 import {
   RateLimiter,
@@ -15,18 +14,14 @@ export function withRateLimit(
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
     try {
-      // Check rate limit
       const result = await rateLimiter.checkLimit(request);
 
-      // If rate limit exceeded, return error response
       if (!result.allowed) {
         return createRateLimitResponse(result, options.message) as NextResponse;
       }
 
-      // Execute the original handler
       const response = await handler(request);
 
-      // Add rate limit headers to successful responses
       if (!options.skipSuccessfulRequests) {
         response.headers.set('X-RateLimit-Limit', result.limit.toString());
         response.headers.set(
@@ -42,13 +37,12 @@ export function withRateLimit(
       return response;
     } catch (error) {
       console.error('Rate limit middleware error:', error);
-      // If rate limiting fails, allow the request to proceed
+
       return handler(request);
     }
   };
 }
 
-// Higher-order function for easy use with API routes
 export function createRateLimitedHandler<T extends NextRequest>(
   handler: (request: T) => Promise<NextResponse>,
   rateLimiter: RateLimiter,

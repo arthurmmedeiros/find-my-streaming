@@ -1,6 +1,3 @@
-// app/recommendations/page.tsx
-// Or you can integrate this into your existing search page
-
 import { RecommendationSearch } from '@/components/recommendation-search';
 
 export default function RecommendationsPage() {

@@ -20,41 +20,6 @@ class TMDBApiError extends Error {
 }
 
 export const tmdbApi = {
-  // async searchMulti(
-  //   query: string,
-  //   options: {
-  //     page?: number;
-  //     year?: number;
-  //     genreIds?: number[];
-  //   } = {}
-  // ): Promise<SearchResult[]> {
-  //   if (!query.trim()) {
-  //     return [];
-  //   }
-
-  //   const params: Record<string, string> = {
-  //     query,
-  //     page: (options.page || 1).toString(),
-  //   };
-
-  //   if (options.year) {
-  //     params.year = options.year.toString();
-  //   }
-
-  //   if (options.genreIds?.length) {
-  //     params.with_genres = options.genreIds.join(',');
-  //   }
-  //   const data = await tmdbApiClient.get<TMDBApiResponse<SearchResult>>(
-  //     '/search/multi',
-  //     params
-  //   );
-
-  //   // Filter out person results and return only movies and TV shows
-  //   return data.results.filter(
-  //     (item) => item.media_type === 'movie' || item.media_type === 'tv'
-  //   );
-  // },
-
   async searchMulti(
     query: string,
     options: {
@@ -63,7 +28,6 @@ export const tmdbApi = {
       genreIds?: number[];
     } = {}
   ): Promise<SearchResult[]> {
-    // If no query and no genreIds, search for popular content
     if (!query.trim() && (!options.genreIds || options.genreIds.length === 0)) {
       return this.getPopular();
     }
@@ -74,9 +38,7 @@ export const tmdbApi = {
         include_adult: 'false',
       });
 
-      // If we have genre IDs, use discover endpoint instead of search
       if (options.genreIds && options.genreIds.length > 0) {
-        // Use discover/movie and discover/tv endpoints
         const [movieResults, tvResults] = await Promise.all([
           this.discoverMovies({
             genreIds: options.genreIds,
@@ -85,10 +47,8 @@ export const tmdbApi = {
           this.discoverTV({ genreIds: options.genreIds, page: options.page }),
         ]);
 
-        // Combine results and add media_type
         const combinedResults = [...movieResults, ...tvResults];
 
-        // If we also have a query, filter by it
         if (query.trim()) {
           const queryLower = query.toLowerCase();
           return combinedResults.filter((item) => {
@@ -102,7 +62,6 @@ export const tmdbApi = {
 
         return combinedResults;
       } else {
-        // Regular search
         params.set('query', query);
         if (options.year) {
           params.set('year', options.year.toString());
@@ -114,7 +73,6 @@ export const tmdbApi = {
         params
       );
 
-      // Filter out person results and only keep movies and TV shows
       return response.results.filter(
         (item) => item.media_type === 'movie' || item.media_type === 'tv'
       );
@@ -147,7 +105,7 @@ export const tmdbApi = {
 
     if (options.minRating) {
       params.set('vote_average.gte', options.minRating.toString());
-      params.set('vote_count.gte', '100'); // Ensure enough votes for reliable rating
+      params.set('vote_count.gte', '100');
     }
 
     if (options.year) {
@@ -209,13 +167,11 @@ export const tmdbApi = {
         tvPopular,
       ]);
 
-      // Combine and shuffle results
       const combinedResults = [
         ...movieResponse.results.slice(0, 10),
         ...tvResponse.results.slice(0, 10),
       ];
 
-      // Shuffle array for variety
       return combinedResults.sort(() => Math.random() - 0.5).slice(0, 15);
     } catch (error) {
       console.error('Error fetching popular content:', error);

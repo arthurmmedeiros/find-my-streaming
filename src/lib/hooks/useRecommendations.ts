@@ -65,7 +65,6 @@ export const useRecommendations = (): UseRecommendationsReturn => {
         const errorData = await response.json();
 
         if (response.status === 429) {
-          // Rate limit exceeded
           const retryMinutes = Math.ceil((errorData.retryAfter || 60) / 60);
           throw new Error(
             `Too many requests. Please wait ${retryMinutes} minute${retryMinutes > 1 ? 's' : ''} before trying again.`
@@ -83,7 +82,6 @@ export const useRecommendations = (): UseRecommendationsReturn => {
       setError(errorMessage);
       setRecommendations(null);
 
-      // Log error for debugging (remove in production)
       console.error('Recommendation error:', err);
     } finally {
       setLoading(false);
